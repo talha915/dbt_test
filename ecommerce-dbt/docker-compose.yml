@@ -16,7 +16,24 @@ services:
       test: ["CMD-SHELL", "pg_isready -U db_user -d db"]
       interval: 10s
       timeout: 5s
-      retries: 5   
+      retries: 5 
+
+  dbt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dbt_container
+    networks:
+      - my-network
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./ecommerce_dbt:/usr/app  
+      - ~/.dbt:/root/.dbt    
+    working_dir: /usr/app
+    command: ["run"]
+
 networks:
   my-network:
     driver: bridge    
