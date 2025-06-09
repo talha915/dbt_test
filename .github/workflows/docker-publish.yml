@@ -26,8 +26,8 @@ jobs:
       - name: Build DBT Docker image
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dbt-ecommerce-dbt:latest \
-            -f ecommerce-dbt/ecommerce_data/dbt/Dockerfile \
-            ecommerce-dbt/ecommerce_data/dbt
+            -f ecommerce-dbt/dbt/Dockerfile \
+            ecommerce-dbt/dbt
 
       # ✅ Step 4: Push DBT Image
       - name: Push DBT Docker image
@@ -37,8 +37,8 @@ jobs:
       - name: Build Superset Docker image
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/superset-ecommerce-dbt:latest \
-            -f ecommerce-dbt/ecommerce_data/superset/Dockerfile.superset \
-            ecommerce-dbt/ecommerce_data/superset
+            -f ecommerce-dbt/superset/Dockerfile.superset \
+            ecommerce-dbt/superset
 
       # ✅ Step 6: Push Superset Image
       - name: Push Superset Docker image
@@ -49,4 +49,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docker-compose
-          path: ecommerce-dbt/ecommerce_data/docker-compose.yml
+          path: ecommerce-dbt/docker-compose.yml
