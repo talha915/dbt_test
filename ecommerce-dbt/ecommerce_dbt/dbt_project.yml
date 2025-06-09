@@ -20,4 +20,6 @@ models:
         +materialized: view
     intermediate:
       +materialized: view  
+    mart:
+      +materialized: view  
     # No +schema override here to avoid doubling schema prefix
