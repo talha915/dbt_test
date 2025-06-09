@@ -36,7 +36,7 @@ jobs:
             -v ${{ github.workspace }}/ecommerce-dbt:/usr/app \
             -v ${{ github.workspace }}/.dbt:/root/.dbt \
             -e DBT_PROFILES_DIR=/usr/app/profiles \
-            dbt-ecommerce-dbt dbt test      
+            ${{ secrets.DOCKER_HUB_USERNAME }}/dbt-ecommerce-dbt dbt test      
 
       # ✅ Step 5: Push DBT Image
       - name: Push DBT Docker image
