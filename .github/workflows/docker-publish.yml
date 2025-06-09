@@ -22,21 +22,23 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # ✅ Step 3: Build DBT Image
+      # ✅ Step 3: Build DBT Image with local alias
       - name: Build DBT Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dbt-ecommerce-dbt:latest \
+          docker build \
+            -t ${{ secrets.DOCKER_HUB_USERNAME }}/dbt-ecommerce-dbt:latest \
+            -t dbt-ecommerce-dbt:latest \
             -f ecommerce-dbt/Dockerfile \
             ecommerce-dbt
 
-      # ✅ Step 4: Run DBT test
+      # ✅ Step 4: Run dbt test
       - name: Run dbt test
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/ecommerce-dbt:/usr/app \
             -v ${{ github.workspace }}/.dbt:/root/.dbt \
             -e DBT_PROFILES_DIR=/usr/app/profiles \
-            ${{ secrets.DOCKER_HUB_USERNAME }}/dbt-ecommerce-dbt dbt test      
+            dbt-ecommerce-dbt:latest dbt test
 
       # ✅ Step 5: Push DBT Image
       - name: Push DBT Docker image
@@ -45,11 +47,12 @@ jobs:
       # ✅ Step 6: Build Superset Image
       - name: Build Superset Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/superset-ecommerce-dbt:latest \
+          docker build \
+            -t ${{ secrets.DOCKER_HUB_USERNAME }}/superset-ecommerce-dbt:latest \
             -f ecommerce-dbt/Dockerfile.superset \
             ecommerce-dbt
 
-      # ✅ Step 7: Push Superset Image
+      # ✅ Step 7: Push Superset Docker image
       - name: Push Superset Docker image
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/superset-ecommerce-dbt:latest
 
