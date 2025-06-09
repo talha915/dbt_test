@@ -34,6 +34,31 @@ services:
     working_dir: /usr/app
     command: ["run"]
 
+  superset:
+    build:
+      context: .
+      dockerfile: Dockerfile.superset
+    container_name: superset_container
+    ports:
+      - "8088:8088"
+    environment:
+      SUPERSET_SECRET_KEY: "testing_key"
+      PYTHONPATH: "/app/pythonpath:/app"
+    volumes:
+      - ./superset_home:/app/superset_home
+    depends_on:
+      - db
+    networks:
+      - my-network
+    command: >
+      /bin/sh -c "
+        superset db upgrade &&
+        superset fab create-admin --username admin --firstname Superset --lastname Admin --email admin@superset.com --password admin &&
+        superset init &&
+        superset run -h 0.0.0.0 -p 8088 --with-threads --reload --debug
+      "
+
+
 networks:
   my-network:
     driver: bridge    
