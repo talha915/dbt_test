@@ -1,0 +1,42 @@
+docker-compose exec db psql -U db_user -d db
+
+CREATE SCHEMA IF NOT EXISTS raw;
+
+CREATE TABLE raw.customers (
+    customer_id SERIAL PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT,
+    created_at DATE
+);
+
+CREATE TABLE raw.orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES raw.customers(customer_id),
+    order_date DATE,
+    status TEXT,
+    total_amount NUMERIC
+);
+
+CREATE TABLE raw.order_items (
+    order_item_id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES raw.orders(order_id),
+    product_name TEXT,
+    quantity INT,
+    unit_price NUMERIC
+);
+
+-- Sample data
+INSERT INTO raw.customers (first_name, last_name, email, created_at) VALUES
+('Ali', 'Khan', 'ali@example.com', '2023-01-01'),
+('Sara', 'Malik', 'sara@example.com', '2023-02-10');
+
+INSERT INTO raw.orders (customer_id, order_date, status, total_amount) VALUES
+(1, '2023-03-01', 'shipped', 1000),
+(1, '2023-04-01', 'pending', 700),
+(2, '2023-04-15', 'delivered', 300);
+
+INSERT INTO raw.order_items (order_id, product_name, quantity, unit_price) VALUES
+(1, 'Laptop', 1, 1000),
+(2, 'Phone', 1, 700),
+(3, 'Book', 3, 100);
