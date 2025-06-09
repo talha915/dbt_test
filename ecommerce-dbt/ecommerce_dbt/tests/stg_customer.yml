@@ -1,0 +1,10 @@
+# tests/stg_customers.yml
+version: 2
+
+models:
+  - name: stg_customer
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
